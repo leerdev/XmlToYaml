@@ -18,10 +18,13 @@ public class Converter {
     private static String OUTPUT_FILE_NAME = "src/main/resources/output.yml";
 
     public static void main (String[] args) throws JSONException, IOException {
+        // reading the input file / читаем входной файл
         File xmlFile = new File(INPUT_FILE_NAME);
         String xmlStr = new String(
                 Files.readAllBytes(xmlFile.toPath()), StandardCharsets.UTF_8);
 
+        //converting to json and removing the requested element
+        //конвертируем в json и удаляем необходимый элемент
         JSONObject xmlJSONObj = XML.toJSONObject(xmlStr);
         xmlJSONObj.getJSONObject("fsa:ResponseFsaType")
                 .getJSONObject("fsa:RdcTr")
@@ -35,6 +38,12 @@ public class Converter {
         mapper.writeValue(new File(OUTPUT_FILE_NAME), asYaml(xmlJSONObj.toString()));
     }
 
+    /**
+     * Converting JSON string to YAML string / Конвертирует JSON строку в YAML строку
+     * @param jsonString - JSON string
+     * @return Yaml string
+     * @throws IOException
+     */
     private static String asYaml(String jsonString) throws IOException {
         JsonNode jsonNodeTree = new ObjectMapper().readTree(jsonString);
         String jsonAsYaml = new YAMLMapper().writeValueAsString(jsonNodeTree);
